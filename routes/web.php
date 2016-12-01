@@ -11,12 +11,28 @@
 |
 */
 
+
+
 Route::get('/', function () {
-    $wow = App::make('wow');
+    $minutes = 5;
 
-    $response = $wow->getGuild('Darksorrow', 'Fat Balls Final Release', [
-        'fields' => 'members',
-    ]);
+    $guild = Cache::remember('guild', $minutes, function () {
+        $wow = App::make('wow');
 
-    return $response->getBody();
+        $response = $wow->getGuild('Darksorrow', 'Fat Balls Final Release', [
+            'fields' => 'members',
+        ]);
+
+        return json_decode($response->getBody());
+    });
+
+    $members = array_filter($guild->members, function($m) {
+        if($m->character->level == 110) {
+            return true;
+        }
+    });
+
+    //dd($members);
+
+    return view('lucky', ['members' => $members]);
 });

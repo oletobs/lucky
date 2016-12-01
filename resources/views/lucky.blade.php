@@ -7,8 +7,6 @@
     <title>u lucky? @yield('title')</title>
 
     @section('stylesheets')
-        <link rel="stylesheet" type='text/css' href="http://fonts.googleapis.com/css?family=Lato:400,700|Londrina+Solid">
-        <link rel='stylesheet' type='text/css' href='https://fonts.googleapis.com/css?family=Droid+Serif:400,700'>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
         <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     @show
@@ -22,7 +20,26 @@
 @show
 
 @section('content')
-    <p>LYCCCCCKKKKYYYYY</p>
+    <table class="table table-inverse">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Class</th>
+            <th>Level</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach($members as $key=>$member)
+            <tr>
+                <td>{{ ++$key }}</td>
+                <td>{{ $member->character->name }}</td>
+                <td>{{ $member->character->class }}</td>
+                <td>{{ $member->character->level }}</td>
+            </tr>
+        @endforeach
+        </tbody>
+    </table>
 @show
 
 @section('footer')
