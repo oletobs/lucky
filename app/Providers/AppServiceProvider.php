@@ -32,14 +32,14 @@ class AppServiceProvider extends ServiceProvider
     public function registerBlizzardClient()
     {
         $this->app->singleton('blizzard', function(){
-            return new BlizzardClient(env('BLIZZARD_API_KEY'));
+            return new BlizzardClient(env('BLIZZARD_API_KEY'), env('BLIZZARD_API_REGION'), env('BLIZZARD_API_LOCALE'));
         });
     }
 
     public function registerWOWService()
     {
         $this->app->singleton('wow', function($app){
-           return new WorldOfWarcraft($app->make('blizzard'), env('WOW_API_REGION'), env('WOW_API_LOCALE'));
+           return new WorldOfWarcraft($app->make('blizzard'));
         });
     }
 }
