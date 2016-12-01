@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "dc15d50e6d6a2bb34813372bfa5879b0",
-    "content-hash": "9a42d04736788e112df670bc20d0ec95",
+    "hash": "878e1e94d951095266a6aabbcf1b5b80",
+    "content-hash": "58c63b13f400fb00c318857b377bef56",
     "packages": [
         {
             "name": "classpreloader/classpreloader",
@@ -687,6 +687,50 @@
                 "storage"
             ],
             "time": "2016-10-19 20:38:46"
+        },
+        {
+            "name": "logansua/blizzard-api-client",
+            "version": "v1.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/LogansUA/blizzard-api-php-client.git",
+                "reference": "9d7c7bdfcb6a5b4964f267c8d8ae8c8ca115dd47"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/LogansUA/blizzard-api-php-client/zipball/9d7c7bdfcb6a5b4964f267c8d8ae8c8ca115dd47",
+                "reference": "9d7c7bdfcb6a5b4964f267c8d8ae8c8ca115dd47",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^6.1@dev",
+                "php": ">=5.6.0",
+                "symfony/options-resolver": "^3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "BlizzardApi\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Oleg Kachinskiy",
+                    "email": "Logansoleg@gmail.com"
+                }
+            ],
+            "description": "API client for blizzard API written in PHP",
+            "keywords": [
+                "api",
+                "blizzard",
+                "client",
+                "world of warcraft"
+            ],
+            "time": "2016-11-06 17:07:57"
         },
         {
             "name": "monolog/monolog",
@@ -1621,6 +1665,60 @@
             "description": "Symfony HttpKernel Component",
             "homepage": "https://symfony.com",
             "time": "2016-11-21 02:44:20"
+        },
+        {
+            "name": "symfony/options-resolver",
+            "version": "v3.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/options-resolver.git",
+                "reference": "45940bcad6388b3b6058107eca67ced738d205bb"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/options-resolver/zipball/45940bcad6388b3b6058107eca67ced738d205bb",
+                "reference": "45940bcad6388b3b6058107eca67ced738d205bb",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5.9"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.2-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\OptionsResolver\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony OptionsResolver Component",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "config",
+                "configuration",
+                "options"
+            ],
+            "time": "2016-05-13 18:13:23"
         },
         {
             "name": "symfony/polyfill-mbstring",

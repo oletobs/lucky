@@ -12,5 +12,11 @@
 */
 
 Route::get('/', function () {
-    return view('lucky');
+    $wow = App::make('wow');
+
+    $response = $wow->getGuild('Darksorrow', 'Fat Balls Final Release', [
+        'fields' => 'members',
+    ]);
+
+    return $response->getBody();
 });
