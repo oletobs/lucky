@@ -36,7 +36,12 @@
             <th>MoS</th>
             <th>Arcway</th>
             <th>CoS</th>
+            <th>Karazhan</th>
             <th>Total Mythic Dungeons</th>
+            <th>Total LFR Kills</th>
+            <th>Total Normal Raid Kills</th>
+            <th>Total Heroic Raid Kills</th>
+            <th>Total Mythic Raid Kills</th>
         </tr>
         </thead>
         <tbody>
@@ -54,7 +59,12 @@
                 <td>{{ $member->statistics->statistics->subCategories[5]->subCategories[6]->statistics[26]->quantity }}</td>
                 <td>{{ $member->statistics->statistics->subCategories[5]->subCategories[6]->statistics[27]->quantity }}</td>
                 <td>{{ $member->statistics->statistics->subCategories[5]->subCategories[6]->statistics[28]->quantity }}</td>
+                <td>{{ $member->statistics->statistics->subCategories[5]->subCategories[6]->statistics[29]->quantity }}</td>
                 <td>{{ $member->totalMythicRuns }}</td>
+                <td>{{ $member->totalLFR }}</td>
+                <td>{{ $member->totalNormal }}</td>
+                <td>{{ $member->totalHeroic }}</td>
+                <td>{{ $member->totalMythic }}</td>
             </tr>
         @endforeach
         </tbody>
