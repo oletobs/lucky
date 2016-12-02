@@ -7688,4 +7688,8 @@ button.close {
   }
 }
 
+.left-border {
+  border-left: 1px #55595c solid;
+}
+
 /*# sourceMappingURL=app.css.map */

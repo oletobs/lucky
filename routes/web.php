@@ -11,7 +11,54 @@
 |
 */
 
+Route::get('/update/stats', function () {
+    $guild = Cache::remember('guild', 100, function () {
+        $wow = App::make('wow');
 
+        $response = $wow->getGuild('Darksorrow', 'Fat Balls Final Release', [
+            'fields' => 'members',
+        ]);
+
+        return json_decode($response->getBody());
+    });
+
+    foreach ($guild->members as $m) {
+        if($m->character->level == 110 && ($m->rank == 0 || $m->rank == 1 || $m->rank == 2 || $m->rank == 3 || $m->rank == 4 || $m->character->name == 'Soursuzy')) {
+            $wow = App::make('wow');
+
+            $response = $wow->getCharacter('Darksorrow', $m->character->name, [
+                'fields' => 'statistics',
+            ]);
+
+            Cache::put($m->character->name . '_stats', json_decode($response->getBody())->statistics, 100);
+        }
+    }
+});
+
+
+Route::get('/update/items', function () {
+    $guild = Cache::remember('guild', 100, function () {
+        $wow = App::make('wow');
+
+        $response = $wow->getGuild('Darksorrow', 'Fat Balls Final Release', [
+            'fields' => 'members',
+        ]);
+
+        return json_decode($response->getBody());
+    });
+
+    foreach ($guild->members as $m) {
+        if($m->character->level == 110 && ($m->rank == 0 || $m->rank == 1 || $m->rank == 2 || $m->rank == 3 || $m->rank == 4 || $m->character->name == 'Soursuzy')) {
+            $wow = App::make('wow');
+
+            $response = $wow->getCharacter('Darksorrow', $m->character->name, [
+                'fields' => 'items',
+            ]);
+
+            Cache::put($m->character->name . '_items', json_decode($response->getBody())->items, 100);
+        }
+    }
+});
 
 Route::get('/', function () {
     $minutes = 5;
@@ -28,15 +75,17 @@ Route::get('/', function () {
 
     $members = array_filter($guild->members, function($m) {
         if($m->character->level == 110 && ($m->rank == 0 || $m->rank == 1 || $m->rank == 2 || $m->rank == 3 || $m->rank == 4 || $m->character->name == 'Soursuzy')) {
-            $m->statistics = Cache::remember($m->character->name, 100, function() use ($m) {
+            $m->statistics = Cache::remember($m->character->name . '_stats', 100, function() use ($m) {
                 $wow = App::make('wow');
 
                 $response = $wow->getCharacter('Darksorrow', $m->character->name, [
                     'fields' => 'statistics',
                 ]);
 
-                return json_decode($response->getBody());
+                return json_decode($response->getBody())->statistics;
             });
+
+            $m->items = Cache::get($m->character->name . '_items');
             return true;
         }
     });
@@ -55,23 +104,23 @@ Route::get('/', function () {
         $member->totalMythic = 0;
 
         for ($i = 0; $i < count($mythicDungeonIds); $i++) {
-            $member->totalMythicRuns += $member->statistics->statistics->subCategories[5]->subCategories[6]->statistics[$mythicDungeonIds[$i]]->quantity;
+            $member->totalMythicRuns += $member->statistics->subCategories[5]->subCategories[6]->statistics[$mythicDungeonIds[$i]]->quantity;
         }
 
         for ($i = 0; $i < count($lfrIds); $i++) {
-            $member->totalLFR += $member->statistics->statistics->subCategories[5]->subCategories[6]->statistics[$lfrIds[$i]]->quantity;
+            $member->totalLFR += $member->statistics->subCategories[5]->subCategories[6]->statistics[$lfrIds[$i]]->quantity;
         }
 
         for ($i = 0; $i < count($normalIds); $i++) {
-            $member->totalNormal += $member->statistics->statistics->subCategories[5]->subCategories[6]->statistics[$normalIds[$i]]->quantity;
+            $member->totalNormal += $member->statistics->subCategories[5]->subCategories[6]->statistics[$normalIds[$i]]->quantity;
         }
 
         for ($i = 0; $i < count($heroicIds); $i++) {
-            $member->totalHeroic += $member->statistics->statistics->subCategories[5]->subCategories[6]->statistics[$heroicIds[$i]]->quantity;
+            $member->totalHeroic += $member->statistics->subCategories[5]->subCategories[6]->statistics[$heroicIds[$i]]->quantity;
         }
 
         for ($i = 0; $i < count($mythicIds); $i++) {
-            $member->totalMythic += $member->statistics->statistics->subCategories[5]->subCategories[6]->statistics[$mythicIds[$i]]->quantity;
+            $member->totalMythic += $member->statistics->subCategories[5]->subCategories[6]->statistics[$mythicIds[$i]]->quantity;
         }
     }
 

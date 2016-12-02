@@ -27,7 +27,7 @@
             <th>Guild Rank</th>
             <th>Name</th>
             <th>Class</th>
-            <th>EoA</th>
+            <th class="left-border">EoA</th>
             <th>DHT</th>
             <th>NL</th>
             <th>HoV</th>
@@ -37,11 +37,14 @@
             <th>Arcway</th>
             <th>CoS</th>
             <th>Karazhan</th>
-            <th>Total Mythic Dungeons</th>
-            <th>Total LFR Kills</th>
-            <th>Total Normal Raid Kills</th>
-            <th>Total Heroic Raid Kills</th>
-            <th>Total Mythic Raid Kills</th>
+            <th>Total</th>
+            <th class="left-border">LFR</th>
+            <th>Normal</th>
+            <th>Heroic</th>
+            <th>Mythic</th>
+            <th class="left-border">Equipped ilvl</th>
+            <th>Average ilvl</th>
+            <th>Artifact ilvl</th>
         </tr>
         </thead>
         <tbody>
@@ -50,21 +53,30 @@
                 <td>{{ $member->rank }}</td>
                 <td>{{ $member->character->name }}</td>
                 <td>{{ $member->character->class }}</td>
-                <td>{{ $member->statistics->statistics->subCategories[5]->subCategories[6]->statistics[2]->quantity }}</td>
-                <td>{{ $member->statistics->statistics->subCategories[5]->subCategories[6]->statistics[5]->quantity }}</td>
-                <td>{{ $member->statistics->statistics->subCategories[5]->subCategories[6]->statistics[8]->quantity }}</td>
-                <td>{{ $member->statistics->statistics->subCategories[5]->subCategories[6]->statistics[11]->quantity }}</td>
-                <td>{{ $member->statistics->statistics->subCategories[5]->subCategories[6]->statistics[20]->quantity }}</td>
-                <td>{{ $member->statistics->statistics->subCategories[5]->subCategories[6]->statistics[23]->quantity }}</td>
-                <td>{{ $member->statistics->statistics->subCategories[5]->subCategories[6]->statistics[26]->quantity }}</td>
-                <td>{{ $member->statistics->statistics->subCategories[5]->subCategories[6]->statistics[27]->quantity }}</td>
-                <td>{{ $member->statistics->statistics->subCategories[5]->subCategories[6]->statistics[28]->quantity }}</td>
-                <td>{{ $member->statistics->statistics->subCategories[5]->subCategories[6]->statistics[29]->quantity }}</td>
+                <td class="left-border">{{ $member->statistics->subCategories[5]->subCategories[6]->statistics[2]->quantity }}</td>
+                <td>{{ $member->statistics->subCategories[5]->subCategories[6]->statistics[5]->quantity }}</td>
+                <td>{{ $member->statistics->subCategories[5]->subCategories[6]->statistics[8]->quantity }}</td>
+                <td>{{ $member->statistics->subCategories[5]->subCategories[6]->statistics[11]->quantity }}</td>
+                <td>{{ $member->statistics->subCategories[5]->subCategories[6]->statistics[20]->quantity }}</td>
+                <td>{{ $member->statistics->subCategories[5]->subCategories[6]->statistics[23]->quantity }}</td>
+                <td>{{ $member->statistics->subCategories[5]->subCategories[6]->statistics[26]->quantity }}</td>
+                <td>{{ $member->statistics->subCategories[5]->subCategories[6]->statistics[27]->quantity }}</td>
+                <td>{{ $member->statistics->subCategories[5]->subCategories[6]->statistics[28]->quantity }}</td>
+                <td>{{ $member->statistics->subCategories[5]->subCategories[6]->statistics[29]->quantity }}</td>
                 <td>{{ $member->totalMythicRuns }}</td>
-                <td>{{ $member->totalLFR }}</td>
+                <td class="left-border">{{ $member->totalLFR }}</td>
                 <td>{{ $member->totalNormal }}</td>
                 <td>{{ $member->totalHeroic }}</td>
                 <td>{{ $member->totalMythic }}</td>
+                <td class="left-border">{{ $member->items->averageItemLevelEquipped }}</td>
+                <td>{{ $member->items->averageItemLevel }}</td>
+                @if (isset($member->items->mainHand))
+                    <td>{{ $member->items->mainHand->itemLevel }}</td>
+                @elseif (isset($member->items->offHand))
+                    <td>{{ $member->items->offHand->itemLevel }}</td>
+                @else
+                    <td>Artifact mia!</td>
+                @endif
             </tr>
         @endforeach
         </tbody>
