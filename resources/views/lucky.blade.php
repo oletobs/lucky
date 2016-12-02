@@ -23,19 +23,37 @@
     <table class="table table-inverse">
         <thead>
         <tr>
-            <th>#</th>
+            <th>Guild Rank</th>
             <th>Name</th>
             <th>Class</th>
-            <th>Level</th>
+            <th>EoA</th>
+            <th>DHT</th>
+            <th>NL</th>
+            <th>HoV</th>
+            <th>VotW</th>
+            <th>BRH</th>
+            <th>MoS</th>
+            <th>Arcway</th>
+            <th>CoS</th>
+            <th>Total Mythic Dungeons</th>
         </tr>
         </thead>
         <tbody>
         @foreach($members as $key=>$member)
             <tr>
-                <td>{{ ++$key }}</td>
+                <td>{{ $member->rank }}</td>
                 <td>{{ $member->character->name }}</td>
                 <td>{{ $member->character->class }}</td>
-                <td>{{ $member->character->level }}</td>
+                <td>{{ $member->statistics->statistics->subCategories[5]->subCategories[6]->statistics[2]->quantity }}</td>
+                <td>{{ $member->statistics->statistics->subCategories[5]->subCategories[6]->statistics[5]->quantity }}</td>
+                <td>{{ $member->statistics->statistics->subCategories[5]->subCategories[6]->statistics[8]->quantity }}</td>
+                <td>{{ $member->statistics->statistics->subCategories[5]->subCategories[6]->statistics[11]->quantity }}</td>
+                <td>{{ $member->statistics->statistics->subCategories[5]->subCategories[6]->statistics[20]->quantity }}</td>
+                <td>{{ $member->statistics->statistics->subCategories[5]->subCategories[6]->statistics[23]->quantity }}</td>
+                <td>{{ $member->statistics->statistics->subCategories[5]->subCategories[6]->statistics[26]->quantity }}</td>
+                <td>{{ $member->statistics->statistics->subCategories[5]->subCategories[6]->statistics[27]->quantity }}</td>
+                <td>{{ $member->statistics->statistics->subCategories[5]->subCategories[6]->statistics[28]->quantity }}</td>
+                <td>{{ $member->totalMythicRuns }}</td>
             </tr>
         @endforeach
         </tbody>

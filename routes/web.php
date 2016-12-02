@@ -27,12 +27,32 @@ Route::get('/', function () {
     });
 
     $members = array_filter($guild->members, function($m) {
-        if($m->character->level == 110) {
+        if($m->character->level == 110 && $m->rank == 3) {
+            $m->statistics = Cache::remember($m->character->name, 100, function() use ($m) {
+                $wow = App::make('wow');
+
+                $response = $wow->getCharacter('Darksorrow', $m->character->name, [
+                    'fields' => 'statistics',
+                ]);
+
+                return json_decode($response->getBody());
+            });
             return true;
         }
     });
 
-    //dd($members);
+    foreach ($members as $member) {
+        $mythicIds = [2,5,8,11,20,23,26,27,28];
+
+        $member->totalMythicRuns = 0;
+
+        for ($i = 0; $i < count($mythicIds); $i++) {
+            $member->totalMythicRuns += $member->statistics->statistics->subCategories[5]->subCategories[6]->statistics[$mythicIds[$i]]->quantity;
+        }
+    }
+
+    //dd($members[1]->statistics->statistics->subCategories[5]->subCategories[6]->statistics);
+
 
     return view('lucky', ['members' => $members]);
 });
