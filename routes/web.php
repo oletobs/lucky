@@ -27,7 +27,7 @@ Route::get('/', function () {
     });
 
     $members = array_filter($guild->members, function($m) {
-        if($m->character->level == 110 && $m->rank == 3) {
+        if($m->character->level == 110 && ($m->rank == 0 || $m->rank == 1 || $m->rank == 2 || $m->rank == 3 || $m->rank == 4)) {
             $m->statistics = Cache::remember($m->character->name, 100, function() use ($m) {
                 $wow = App::make('wow');
 
@@ -51,7 +51,7 @@ Route::get('/', function () {
         }
     }
 
-    //dd($members[1]->statistics->statistics->subCategories[5]->subCategories[6]->statistics);
+    //dd($members);
 
 
     return view('lucky', ['members' => $members]);
