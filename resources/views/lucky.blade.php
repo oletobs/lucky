@@ -24,9 +24,10 @@
     <table class="table table-inverse sortable">
         <thead>
         <tr>
-            <th>Guild Rank</th>
+            <!--<th>Guild Rank</th>-->
             <th>Name</th>
             <th>Class</th>
+            <th>Spec</th>
             <th class="left-border">EoA</th>
             <th>DHT</th>
             <th>NL</th>
@@ -42,17 +43,26 @@
             <th>Normal</th>
             <th>Heroic</th>
             <th>Mythic</th>
+            <th>Total</th>
+            <th class="left-border">World Quests</th>
             <th class="left-border">Equipped ilvl</th>
             <th>Average ilvl</th>
             <th>Artifact ilvl</th>
+            <th class="left-border">Total Artifact Power</th>
+            <th>Highest Artifact lvl</th>
         </tr>
         </thead>
         <tbody>
         @foreach($members as $key=>$member)
             <tr>
-                <td>{{ $member->rank }}</td>
+                <!--<td>{{ $member->rank }}</td>-->
                 <td>{{ $member->character->name }}</td>
-                <td>{{ $member->character->class }}</td>
+                <td>{{ $class[$member->character->class] }}</td>
+                    @if (isset($member->character->spec))
+                        <td>{{ $member->character->spec->name }}</td>
+                    @else
+                        <td>No spec</td>
+                    @endif
                 <td class="left-border">{{ $member->statistics->subCategories[5]->subCategories[6]->statistics[2]->quantity }}</td>
                 <td>{{ $member->statistics->subCategories[5]->subCategories[6]->statistics[5]->quantity }}</td>
                 <td>{{ $member->statistics->subCategories[5]->subCategories[6]->statistics[8]->quantity }}</td>
@@ -68,6 +78,8 @@
                 <td>{{ $member->totalNormal }}</td>
                 <td>{{ $member->totalHeroic }}</td>
                 <td>{{ $member->totalMythic }}</td>
+                <td>{{ $member->totalRaid }}</td>
+                <td class="left-border">{{ $member->totalWQ }}</td>
                 <td class="left-border">{{ $member->items->averageItemLevelEquipped }}</td>
                 <td>{{ $member->items->averageItemLevel }}</td>
                 @if (isset($member->items->mainHand))
@@ -77,6 +89,8 @@
                 @else
                     <td>Artifact mia!</td>
                 @endif
+                <td class="left-border">{{ $member->totalAP }}</td>
+                <td>{{ $member->maxArtLvl }}</td>
             </tr>
         @endforeach
         </tbody>

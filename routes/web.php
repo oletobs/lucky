@@ -12,7 +12,7 @@
 */
 
 Route::get('/update/stats', function () {
-    $guild = Cache::remember('guild', 100, function () {
+    $guild = Cache::remember('guild', 10000, function () {
         $wow = App::make('wow');
 
         $response = $wow->getGuild('Darksorrow', 'Fat Balls Final Release', [
@@ -30,14 +30,38 @@ Route::get('/update/stats', function () {
                 'fields' => 'statistics',
             ]);
 
-            Cache::put($m->character->name . '_stats', json_decode($response->getBody())->statistics, 100);
+            Cache::put($m->character->name . '_stats', json_decode($response->getBody())->statistics, 10000);
+        }
+    }
+});
+
+Route::get('/update/achievements', function () {
+    $guild = Cache::remember('guild', 10000, function () {
+        $wow = App::make('wow');
+
+        $response = $wow->getGuild('Darksorrow', 'Fat Balls Final Release', [
+            'fields' => 'members',
+        ]);
+
+        return json_decode($response->getBody());
+    });
+
+    foreach ($guild->members as $m) {
+        if($m->character->level == 110 && ($m->rank == 0 || $m->rank == 1 || $m->rank == 2 || $m->rank == 3 || $m->rank == 4 || $m->character->name == 'Soursuzy')) {
+            $wow = App::make('wow');
+
+            $response = $wow->getCharacter('Darksorrow', $m->character->name, [
+                'fields' => 'achievements',
+            ]);
+
+            Cache::put($m->character->name . '_achies', json_decode($response->getBody())->achievements, 10000);
         }
     }
 });
 
 
 Route::get('/update/items', function () {
-    $guild = Cache::remember('guild', 100, function () {
+    $guild = Cache::remember('guild', 10000, function () {
         $wow = App::make('wow');
 
         $response = $wow->getGuild('Darksorrow', 'Fat Balls Final Release', [
@@ -55,15 +79,14 @@ Route::get('/update/items', function () {
                 'fields' => 'items',
             ]);
 
-            Cache::put($m->character->name . '_items', json_decode($response->getBody())->items, 100);
+            Cache::put($m->character->name . '_items', json_decode($response->getBody())->items, 10000);
         }
     }
 });
 
 Route::get('/', function () {
-    $minutes = 5;
-
-    $guild = Cache::remember('guild', $minutes, function () {
+    ini_set('max_execution_time', 300);
+    $guild = Cache::remember('guild', 10000, function () {
         $wow = App::make('wow');
 
         $response = $wow->getGuild('Darksorrow', 'Fat Balls Final Release', [
@@ -75,7 +98,7 @@ Route::get('/', function () {
 
     $members = array_filter($guild->members, function($m) {
         if($m->character->level == 110 && ($m->rank == 0 || $m->rank == 1 || $m->rank == 2 || $m->rank == 3 || $m->rank == 4 || $m->character->name == 'Soursuzy')) {
-            $m->statistics = Cache::remember($m->character->name . '_stats', 100, function() use ($m) {
+            $m->statistics = Cache::remember($m->character->name . '_stats', 10000, function() use ($m) {
                 $wow = App::make('wow');
 
                 $response = $wow->getCharacter('Darksorrow', $m->character->name, [
@@ -86,6 +109,7 @@ Route::get('/', function () {
             });
 
             $m->items = Cache::get($m->character->name . '_items');
+            $m->achievements = Cache::get($m->character->name . '_achies');
             return true;
         }
     });
@@ -102,6 +126,7 @@ Route::get('/', function () {
         $member->totalNormal = 0;
         $member->totalHeroic = 0;
         $member->totalMythic = 0;
+
 
         for ($i = 0; $i < count($mythicDungeonIds); $i++) {
             $member->totalMythicRuns += $member->statistics->subCategories[5]->subCategories[6]->statistics[$mythicDungeonIds[$i]]->quantity;
@@ -122,10 +147,34 @@ Route::get('/', function () {
         for ($i = 0; $i < count($mythicIds); $i++) {
             $member->totalMythic += $member->statistics->subCategories[5]->subCategories[6]->statistics[$mythicIds[$i]]->quantity;
         }
+
+        $member->totalRaid = $member->totalLFR + $member->totalNormal + $member->totalHeroic + $member->totalMythic;
+
+        $keyAP = array_search('30103', $member->achievements->criteria);
+        $keyArtLvl = array_search('29395', $member->achievements->criteria);
+        $keyWQ = array_search('33094', $member->achievements->criteria);
+
+        $member->totalAP = $member->achievements->criteriaQuantity[$keyAP];
+        $member->maxArtLvl = $member->achievements->criteriaQuantity[$keyArtLvl];
+        $member->totalWQ = $member->achievements->criteriaQuantity[$keyWQ];
     }
 
-    //dd($members[1]);
+    //dd($members[1]->character->spec->name);
 
+    $class = [
+        1 => 'Warrior',
+        2 => 'Paladin',
+        3 => 'Hunter',
+        4 => 'Rogue',
+        5 => 'Priest',
+        6 => 'Death Knight',
+        7 => 'Shaman',
+        8 => 'Mage',
+        9 => 'Warlock',
+        10 => 'Monk',
+        11 => 'Druid',
+        12 => 'Demon Hunter'
+    ];
 
-    return view('lucky', ['members' => $members]);
+    return view('lucky', ['members' => $members, 'class' => $class]);
 });
