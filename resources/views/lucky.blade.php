@@ -11,6 +11,7 @@
         <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     @show
 
+    <script src="{{ asset('js/sortable.js') }}"></script>
 </head>
 
 <body>
@@ -20,7 +21,7 @@
 @show
 
 @section('content')
-    <table class="table table-inverse">
+    <table class="table table-inverse sortable">
         <thead>
         <tr>
             <th>Guild Rank</th>
