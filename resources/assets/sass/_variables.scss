@@ -1,6 +1,10 @@
+// Lucky-colors
+$bg-grey: #373a3c;
+$button-orange: #f49542;
+$text-color-light: #eceeef;
 
 // Body
-$body-bg: #373a3c;
+$body-bg: $bg-grey;
 
 // Borders
 $laravel-border-color: darken($body-bg, 10%);
@@ -20,13 +24,16 @@ $brand-danger: #bf5329;
 $font-family-sans-serif: "Raleway", sans-serif;
 $font-size-base: 14px;
 $line-height-base: 1.6;
-$text-color: #eceeef;
+$text-color: #000; //#eceeef;
 
 // Navbar
 $navbar-default-bg: #fff;
 
 // Buttons
 $btn-default-color: $text-color;
+$btn-default-bg: $button-orange;
+$btn-default-border: darken($button-orange, 15%);
+$btn-font-weight: bold;
 
 // Inputs
 $input-border: lighten($text-color, 40%);
@@ -37,5 +44,6 @@ $input-color-placeholder: lighten($text-color, 30%);
 $panel-default-heading-bg: #fff;
 
 // Tables
-$table-border-color: #55595c;
+$table-border-color: darken($bg-grey, 5%);
+$table-bg-hover: lighten($bg-grey, 10%);
 

@@ -2,9 +2,12 @@
 
 namespace App\Providers;
 
+use App\Services\BlizzardApiScraper;
+use App\Services\WarcraftLogsApiClient;
+use App\Services\WarcraftLogsApiScraper;
 use Illuminate\Support\ServiceProvider;
-use BlizzardApi\BlizzardClient;
-use BlizzardApi\Service\WorldOfWarcraft;
+use App\Services\BlizzardApiClient;
+use GuzzleHttp\Client;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -25,21 +28,37 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->registerBlizzardClient();
-        $this->registerWOWService();
+        $this->registerBlizzardApiClient();
+        $this->registerWarcraftLogsApiClient();
+        $this->registerBlizzardApiScraper();
+        $this->registerWarcraftLogsApiScraper();
     }
 
-    public function registerBlizzardClient()
+    public function registerBlizzardApiClient()
     {
-        $this->app->singleton('blizzard', function(){
-            return new BlizzardClient(env('BLIZZARD_API_KEY'), env('BLIZZARD_API_REGION'), env('BLIZZARD_API_LOCALE'));
+        $this->app->bind('blizzapi', function(){
+            return new BlizzardApiClient(env('BLIZZARD_API_KEY'), new Client());
         });
     }
 
-    public function registerWOWService()
+    public function registerWarcraftLogsApiClient()
     {
-        $this->app->singleton('wow', function($app){
-           return new WorldOfWarcraft($app->make('blizzard'));
+        $this->app->bind('wowlogsapi', function(){
+            return new WarcraftLogsApiClient(env('WARCRAFT_LOGS_API_KEY'), new Client());
+        });
+    }
+
+    public function registerBlizzardApiScraper()
+    {
+        $this->app->bind('blizzscraper', function(){
+            return new BlizzardApiScraper();
+        });
+    }
+
+    public function registerWarcraftLogsApiScraper()
+    {
+        $this->app->bind('wowlogscraper', function(){
+            return new WarcraftLogsApiScraper();
         });
     }
 }
