@@ -9,7 +9,7 @@
 
     @section('stylesheets')
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
-        <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/app.9d2b9789625e19773958.css') }}">
     @show
 
 </head>
@@ -28,7 +28,7 @@
 </div>
 
 @section('scripts')
-    <script src="{{ asset('js/app.js') }}"></script>
+    <script src="{{ asset('js/app.c1afa1c3c836d704c982.js') }}"></script>
 @show
 
 </body>
