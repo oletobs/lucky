@@ -2,26 +2,29 @@
         <table class="character-list-table">
             <colgroup :span="header.cols" v-for="header in headers" class="right-border"></colgroup>
             <thead>
-                <tr class="table-overhead">
+                <tr class="table-overhead" v-if="headers">
                     <th v-for="header in headers" :colspan="header.cols">{{ header.name }}</th>
                     <th colspan="2" v-if="update"></th>
                 </tr>
                 <tr class="table-head">
-                    <th v-for="col in columns" v-on:click="sort(col.id)" class="sort-container">
+                    <th v-for="col in columns" v-on:click="sort(col)" :class="{ 'sort-container': !col.noSort }">
                         {{ col.name }}
-                        <i class="fa fa-sort-asc sort-icon-asc" :class="{ 'sort-active': (col.id == sortCol) && !sortDesc }" aria-hidden="true"></i>
-                        <i class="fa fa-sort-desc sort-icon-desc" :class="{ 'sort-active': (col.id == sortCol) && sortDesc }" aria-hidden="true"></i>
+                        <i v-if="!col.noSort" class="fa fa-sort-asc sort-icon-asc" :class="{ 'sort-active': (col.id == sortCol) && !sortDesc }" aria-hidden="true"></i>
+                        <i v-if="!col.noSort" class="fa fa-sort-desc sort-icon-desc" :class="{ 'sort-active': (col.id == sortCol) && sortDesc }" aria-hidden="true"></i>
                     <th colspan="2" v-if="update">Updated</th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-for="char in characters" :class="{ 'update-table-item-success': char.update.updated }">
-                    <td v-for="col in columns" :class="[col.applyClass ? slugify(char[col.class_name]) : '', (col.id == sortCol) ? 'sort-active-column' : '']">{{ getPropByString(char,col.id) }}</td>
+                    <template v-for="col in columns">
+                        <td v-if="!col.slot" :class="[col.applyClass ? slugify(char[col.class_name]) : '', (col.id == sortCol) ? 'sort-active-column' : '']">{{ getPropByString(char,col.id) }}</td>
+                        <slot v-else :name="col.slotName" :item="getPropByString(char,col.id)"></slot>
+                    </template>
 
                     <template v-if="update">
                         <td>{{ updatedAt(char) }}</td>
                         <td>
-                            <button class="list-button" v-on:click="updateCharacter(char)" :disabled="disableUpdate(char)">
+                            <button class="list-button" v-on:click="updateCharacter(char)" :disabled="disableUpdate(char) || char.update.updating">
                                 <i class="fa fa-refresh fa-lg" v-bind:class="{ 'fa-spin': char.update.updating }" title="Update Character"></i>
                             </button>
                         </td>
@@ -88,8 +91,10 @@
                 return obj[props[i]];
             },
 
-            sort(colId) {
-                this.$emit('sort', colId);
+            sort(col) {
+                if(!col.noSort) {
+                    this.$emit('sort', col.id);
+                }
             },
 
             updateCharacter(char) {

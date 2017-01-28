@@ -22,14 +22,15 @@ class CharacterController extends Controller
         if($char) {
             if($char->updated_at) {
                 if(Carbon::now()->diffInSeconds($char->updated_at) < 120) {
-                    return response()->json(['message' => 'Enhance your calm. This character was recently updated.'], 420);
+                    //return response()->json(['message' => 'Enhance your calm. This character was recently updated.'], 420);
+                    return $char->makeHidden('guild');
                 }
             }
 
             // Battle.net API scraping
             $api = app('blizzapi');
 
-            //\Debugbar::startMeasure('blizz','Querying blizz');
+            \Debugbar::startMeasure('blizz','Querying blizz');
             try {
                 $body  = json_decode($api->getCharacter($char->guild->server->region->short,$char->guild->server->name,$char->name)->getBody(), true);
             } catch (ClientException $e) {
@@ -37,7 +38,7 @@ class CharacterController extends Controller
             } catch (\Exception $e) {
                 return response()->json(['error' => 'Blizzard API Error @ Kork'], 500);
             }
-            //\Debugbar::stopMeasure('blizz');
+            \Debugbar::stopMeasure('blizz');
 
             $stats = app('blizzscraper')->scrape($body);
 
@@ -64,6 +65,18 @@ class CharacterController extends Controller
             */
 
             $char->stats = $stats;
+
+
+
+            foreach ($body['talents'] as $specc) {
+                if(array_key_exists('selected', $specc)) {
+                    foreach ($specc['talents'] as $talent) {
+                        if(array_key_exists('spec', $talent)) {
+                            $char->specc = $talent['spec']['name'];
+                        }
+                    }
+                }
+            }
 
             $char->save();
 

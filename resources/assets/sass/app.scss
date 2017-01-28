@@ -33,6 +33,79 @@ th.sort-container {
   position: relative;
 }
 
+.item-icon {
+  position: relative;
+  float: left;
+
+  img {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+span.item-icon-text {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.9);
+  line-height: 1.1;
+  padding: 1px;
+  bottom: 0;
+  left: 0;
+}
+
+a.item-quality-heirloom {
+  color:  $heirloom-blue;
+  font-weight: bold;
+
+  :link,:visited,:hover,:active {
+    color: $heirloom-blue;
+  }
+}
+
+a.item-quality-uncommon {
+  color:  $uncommon-green;
+  font-weight: bold;
+
+  :link,:visited,:hover,:active {
+    color: $uncommon-green;
+  }
+}
+
+a.item-quality-rare {
+  color:  $rare-blue;
+  font-weight: bold;
+
+  :link,:visited,:hover,:active {
+    color: $rare-blue;
+  }
+}
+
+a.item-quality-epic {
+  color:  $epic-purple;
+  font-weight: bold;
+
+  :link,:visited,:hover,:active {
+    color: $epic-purple;
+  }
+}
+
+a.item-quality-legendary {
+  color: $legendary-orange;
+  font-weight: bold;
+
+  :link,:visited,:hover,:active {
+    color: $legendary-orange;
+  }
+}
+
+a.item-quality-artifact {
+  color: $artifact-color;
+  font-weight: bold;
+
+  :link,:visited,:hover,:active {
+    color: $artifact-color;
+  }
+}
+
 i.sort-icon-asc {
   font-size: 10px;
   position: absolute;

@@ -2,6 +2,9 @@
 
 namespace App\Services;
 
+use GuzzleHttp\Client;
+use GuzzleHttp\Promise;
+
 // TODO: Make this whole thing static?
 class BlizzardApiScraper
 {
@@ -23,6 +26,12 @@ class BlizzardApiScraper
     private $mythicLevelTen       = '33098';
     private $mythicLevelFifteen   = '32028';
 
+    // Mythic+ bonus ids
+    private $mythicDungeonBonusIds = [3410,3411,3412,3413,3414,3415,3416,3417,3418,3509,3510,3534,3535,3536];
+
+    // Item quality
+    private $itemQuality = [ 1 => 'common', 2 => 'uncommon', 3 => 'rare', 4 => 'epic', 5 => 'legendary', 6 => 'artifact', 7 => 'heirloom' ];
+
     public function __construct()
     {
         $this->data = [];
@@ -34,8 +43,96 @@ class BlizzardApiScraper
         $this->sumKillStats();
         $this->getItemLevels($rawData);
         $this->getAchievementData($rawData);
+        $this->getItems($rawData);
 
         return $this->data;
+    }
+
+    /**
+     * Extract item data from default json response.
+     *
+     * @param $rawData
+     */
+    public function getItems($rawData) {
+        $this->data['equipped_dungeon_mythic_plus'] = 0;
+        $this->data['equipped_raid_normal'] = 0;
+        $this->data['equipped_raid_heroic'] = 0;
+        $this->data['equipped_raid_mythic'] = 0;
+        $this->data['equipped_dungeon_mythic'] = 0;
+        $this->data['equipped_weekly_chest'] = 0;
+
+        foreach ($rawData['items'] as $key => $item) {
+            if(is_array($item)) {
+                if($key !== 'tabard' && $key !== 'shirt') {
+                    if($key == 'mainHand' || $key == 'offHand') {
+                        $this->data['artifact'][$key] = [
+                            'id' => $item['id'],
+                            'icon' => $item['icon'],
+                            'bonus' => $item['bonusLists'],
+                            'quality' => $this->itemQuality[$item['quality']],
+                            'item_level' => $item['itemLevel']
+                        ];
+
+                        // TODO: Make wowhead stuff into a separate component
+                        if(array_key_exists('relics',$item)) {
+                            $i = 0;
+                            $client = new Client();
+                            $promises = [];
+                            \Debugbar::startMeasure('wowhead','Querying wowhead');
+                            foreach ($item['relics'] as $relic) {
+                                $this->data['relics'][] = [
+                                    'id' => $relic['itemId'],
+                                    'bonus' => $relic['bonusLists'],
+                                ];
+                                $promises[$i++] = $client->getAsync('http://www.wowhead.com/item='.$relic['itemId'].'&bonus='.implode(":", $relic['bonusLists']).'&xml');
+                            }
+
+                            try {
+                                $results = Promise\unwrap($promises);
+                                for($j = 0; $j < $i; $j++) {
+                                    $xml = simplexml_load_string($results[$j]->getBody());
+                                    $json = json_encode($xml);
+                                    $wowhead = json_decode($json,true);
+
+                                    $this->data['relics'][$j]['icon'] = $wowhead['item']['icon'];
+                                    $this->data['relics'][$j]['item_level'] = intval($wowhead['item']['level']);
+                                    $this->data['relics'][$j]['quality'] = strtolower($wowhead['item']['quality']);
+                                }
+                            } catch (\Exception $e) {
+                                echo $e->getMessage();
+                            }
+                            \Debugbar::stopMeasure('wowhead');
+                        }
+                    } else {
+                        $this->data['items'][$key] =  [
+                            'id' => $item['id'],
+                            'bonus' => $item['bonusLists'],
+                            'icon' => $item['icon'],
+                            'quality' => $this->itemQuality[$item['quality']],
+                            'item_level' => $item['itemLevel']
+                        ];
+
+                        if(strpos($item['context'],'raid-heroic') !== false) {
+                            $this->data['equipped_raid_heroic']++;
+                        } elseif(strpos($item['context'],'raid-mythic') !== false) {
+                            $this->data['equipped_raid_mythic']++;
+                        } elseif(strpos($item['context'],'dungeon-mythic') !== false) {
+                            $this->data['equipped_dungeon_mythic_plus']++;
+                            //$this->data['equipped_dungeon_mythic']++;
+                        } elseif(strpos($item['context'],'challenge-mode-jackpot') !== false) {
+                            $this->data['equipped_weekly_chest']++;
+                        } elseif(strpos($item['context'],'challenge-mode') !== false) {
+                            $this->data['equipped_dungeon_mythic_plus']++;
+                        } elseif(strpos($item['context'],'raid_normal') !== false) {
+                            $this->data['equipped_raid_normal']++;
+                        }
+                    }
+                }
+            }
+        }
+
+        $this->data['equipped_raid_total'] = $this->data['equipped_raid_normal']+$this->data['equipped_raid_heroic']+$this->data['equipped_raid_mythic'];
+        $this->data['equipped_dungeon_total'] =  $this->data['equipped_weekly_chest']+$this->data['equipped_dungeon_mythic_plus'];
     }
 
     /**
@@ -101,6 +198,7 @@ class BlizzardApiScraper
     public function getItemLevels($rawData) {
         $this->data['equipped_ilvl'] = $rawData['items']['averageItemLevelEquipped'];
         $this->data['average_ilvl'] = $rawData['items']['averageItemLevel'];
+        $this->data['equipped_average_ilvl_diff'] = $rawData['items']['averageItemLevel'] - $rawData['items']['averageItemLevelEquipped'];
 
         if(isset($rawData['items']['mainHand'])) {
             $this->data['artifact_ilvl'] = $rawData['items']['mainHand']['itemLevel'];

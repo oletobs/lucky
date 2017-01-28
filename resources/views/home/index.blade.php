@@ -10,7 +10,9 @@
 
         <div class="wow-data-container">
             <section>
-                <router-view v-on:error="childError" v-on:loaded="childLoaded" v-on:loading="childLoading"></router-view>
+                <keep-alive>
+                    <router-view v-on:error="childError" v-on:loaded="childLoaded" v-on:loading="childLoading"></router-view>
+                </keep-alive>
 
                 <div v-show="loading" class="loader">
                     <div class="message-wrapper">

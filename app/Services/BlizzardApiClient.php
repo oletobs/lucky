@@ -38,7 +38,7 @@ class BlizzardApiClient
     {
         $url = sprintf(self::BASE_URL, $region, 'character', $server, $name);
 
-        $queries = ['fields' => 'statistics,items,achievements'];
+        $queries = ['fields' => 'statistics,items,achievements,talents'];
 
         return $this->get($url, $queries);
     }
