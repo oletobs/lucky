@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Character;
-use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Client;
+use GuzzleHttp\Promise;
 
 class CharacterController extends Controller
 {
@@ -27,8 +28,39 @@ class CharacterController extends Controller
                 }
             }
 
-            // Battle.net API scraping
-            $api = app('blizzapi');
+            //\Debugbar::startMeasure('blizzAndWlogsAsync','Querying blizz and wlogs async');
+            $client = new Client();
+            $bapi = app('blizzapi');
+            $wlapi = app('wowlogsapi');
+            $bapi->setClient($client);
+            $wlapi->setClient($client);
+
+            $charPromises = $bapi->getCharacterPromises($char->guild->server->region->short,$char->guild->server->name,$char->name);
+            $ranksPromises = $wlapi->getRankingsPromises($char->guild->server->region->short,$char->guild->server->name,$char->name);
+
+            $charData = [];
+            $ranksData = [];
+            try {
+                $results1 = Promise\unwrap($charPromises);
+                $results2 = Promise\unwrap($ranksPromises);
+                foreach($charPromises as $key => $value) {
+                    $charData[$key] = json_decode($results1[$key]->getBody(),true);
+                }
+
+                foreach($ranksPromises as $key => $value) {
+                    $ranksData[$key] = json_decode($results2[$key]->getBody(),true);
+                }
+            } catch (ClientException $e) {
+                return response()->json(['error' => 'External API Error @ WowLogs or Blizz'], $e->getResponse()->getStatusCode());
+            } catch (Exception $e) {
+                return response()->json(['error' => 'External API Error @ Kork'], 500);
+            }
+
+            //\Debugbar::stopMeasure('blizzAndWlogsAsync');
+
+
+            // Battle.net API
+            /*$api = app('blizzapi');
 
             \Debugbar::startMeasure('blizz','Querying blizz');
             try {
@@ -40,35 +72,43 @@ class CharacterController extends Controller
             }
             \Debugbar::stopMeasure('blizz');
 
-            $stats = app('blizzscraper')->scrape($body);
+            // Battle.net API async
+            $api = app('blizzapi');
+            \Debugbar::startMeasure('blizzasync','Querying blizz async');
+            try {
+                $body  = $api->getCharacterAsync($char->guild->server->region->short,$char->guild->server->name,$char->name);
+            } catch (ClientException $e) {
+                return response()->json(['error' => 'Blizzard API Error @ Blizz'], $e->getResponse()->getStatusCode());
+            } catch (\Exception $e) {
+                return response()->json(['error' => 'Blizzard API Error @ Kork'], 500);
+            }
+            \Debugbar::stopMeasure('blizzasync');
 
-            // WarcraftLogs API scraping
-
-            /*
+            // WarcraftLogs API
             $wlapi = app('wowlogsapi');
-
             \Debugbar::startMeasure('wowlogs','Querying wowlogs');
             try {
-                $wlbody  = json_decode($wlapi->getRankings(
+                $wlbodies = $wlapi->getRankingsAsync(
                     $char->guild->server->region->short,
                     $char->guild->server->name,
                     $char->name
-                )->getBody(), true);
+                );
             } catch (ClientException $e) {
                 return response()->json(['error' => 'WarcraftLogs API Error @ WowLogs'], $e->getResponse()->getStatusCode());
             } catch (Exception $e) {
                 return response()->json(['error' => 'WarcraftLogs API Error @ Kork'], 500);
             }
-            \Debugbar::stopMeasure('wowlogs');
+            \Debugbar::stopMeasure('wowlogs');*/
 
-            //$rankStats = app('wowlogscraper')->scrape($body);
-            */
+            // Scraping relevant data from all the results
+            //\Debugbar::startMeasure('scraping','Scraping results');
+            $stats = app('blizzscraper')->scrape($charData);
+            $rankStats = app('wowlogscraper')->scrape($ranksData);
+            $stats['ranks'] = $rankStats;
 
             $char->stats = $stats;
 
-
-
-            foreach ($body['talents'] as $specc) {
+            foreach ($charData['talents']['talents'] as $specc) {
                 if(array_key_exists('selected', $specc)) {
                     foreach ($specc['talents'] as $talent) {
                         if(array_key_exists('spec', $talent)) {
@@ -77,6 +117,7 @@ class CharacterController extends Controller
                     }
                 }
             }
+            //\Debugbar::stopMeasure('scraping');
 
             $char->save();
 

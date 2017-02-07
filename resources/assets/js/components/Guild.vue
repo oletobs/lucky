@@ -42,6 +42,20 @@
                         </a>
                     </td>
                 </template>
+                <template slot="number" scope="props">
+                    <td :class="props.className">
+                        {{ props.item ? props.item.toLocaleString() : props.item }}
+                    </td>
+                </template>
+                <template slot="ranking" scope="props">
+                    <td class="bold-text" :class="[(props.item >= 40 && props.item < 60) ? 'uncommon-rating' : '',
+                                                   (props.item >= 60 && props.item < 75) ? 'rare-rating' : '',
+                                                   (props.item >= 75 && props.item < 90) ? 'epic-rating' : '',
+                                                   (props.item >= 90 && props.item < 100) ? 'legendary-rating' : '',
+                                                    props.item == 100 ? 'artifact-rating' : '']">
+                        {{ props.item ? props.item.toLocaleString() : props.item }}
+                    </td>
+                </template>
             </character-table>
 
             <div class="row justify-content-end">
@@ -88,9 +102,24 @@
                             { cols: 2, name: 'Artifact' },
                         ],
                         columns: [
-                            { id:'name', name:'Name' },
-                            { id:'class_name', name:'Class', applyClass: true, class_name: 'class_name' },
-                            { id:'specc', name:'Spec' },
+                            {
+                                id:'name', name:'Name',
+                                applyClass: true,
+                                class_name: 'bold-text'
+                            },
+                            { id:'class_name',
+                                name:'Class',
+                                applyPropClass: true,
+                                prop_class_name: 'class_name',
+                                applyClass: true,
+                                class_name: 'bold-text'
+                            },
+                            {
+                                id:'specc',
+                                name:'Spec',
+                                applyClass: true,
+                                class_name: 'bold-text'
+                            },
                             { id:'stats.kills.10880', name:'EoA' },
                             { id:'stats.kills.10883', name:'DHT' },
                             { id:'stats.kills.10886', name:'NL' },
@@ -111,30 +140,45 @@
                             { id:'stats.total_mythic_raid_bosses', name:'Mythic' },
                             { id:'stats.total_raid_bosses', name:'Total' },
                             { id:'stats.total_wq', name:'Total' },
-                            { id:'stats.total_ap', name:'Total AP', formatNumber: true },
+                            { id:'stats.total_ap', name:'Total AP', slot: true, slotName: 'number' },
                             { id:'stats.highest_artifact_ilvl', name:'Highest lvl' }
                         ]
                     },
                     rankings: {
                         headers: [
                             { cols: 3, name: 'Character Information' },
-                            { cols: 3, name: 'Emerald Nightmare Average Rankings' },
-                            { cols: 3, name: 'Trial of Valor Average Rankings' },
-                            { cols: 3, name: 'Nighthold Average Rankings' },
+                            { cols: 3, name: 'Emerald Nightmare Average % Rankings' },
+                            { cols: 3, name: 'Trial of Valor Average % Rankings' },
+                            { cols: 3, name: 'Nighthold Average % Rankings' },
                         ],
                         columns: [
-                            { id:'name', name:'Name' },
-                            { id:'class_name', name:'Class', applyClass: true, class_name: 'class_name' },
-                            { id:'specc', name:'Spec' },
-                            { id: 'average_rank_en_normal', name:'Normal' },
-                            { id: 'average_rank_en_heroic', name:'Heroic' },
-                            { id: 'average_rank_en_mythic', name:'Mythic' },
-                            { id: 'average_rank_tov_normal', name:'Normal' },
-                            { id: 'average_rank_tov_heroic', name:'Heroic' },
-                            { id: 'average_rank_tov_mythic', name:'Mythic' },
-                            { id: 'average_rank_nh_normal', name:'Normal' },
-                            { id: 'average_rank_nh_heroic', name:'Heroic' },
-                            { id: 'average_rank_nh_mythic', name:'Mythic' },
+                            {
+                                id:'name', name:'Name',
+                                applyClass: true,
+                                class_name: 'bold-text'
+                            },
+                            { id:'class_name',
+                                name:'Class',
+                                applyPropClass: true,
+                                prop_class_name: 'class_name',
+                                applyClass: true,
+                                class_name: 'bold-text'
+                            },
+                            {
+                                id:'specc',
+                                name:'Spec',
+                                applyClass: true,
+                                class_name: 'bold-text'
+                            },
+                            { id: 'stats.ranks.average_rank_en_normal', name:'Normal', slot: true, slotName: 'ranking' },
+                            { id: 'stats.ranks.average_rank_en_heroic', name:'Heroic', slot: true, slotName: 'ranking' },
+                            { id: 'stats.ranks.average_rank_en_mythic', name:'Mythic', slot: true, slotName: 'ranking' },
+                            { id: 'stats.ranks.average_rank_tov_normal', name:'Normal', slot: true, slotName: 'ranking' },
+                            { id: 'stats.ranks.average_rank_tov_heroic', name:'Heroic', slot: true, slotName: 'ranking' },
+                            { id: 'stats.ranks.average_rank_tov_mythic', name:'Mythic', slot: true, slotName: 'ranking' },
+                            { id: 'stats.ranks.average_rank_nh_normal', name:'Normal', slot: true, slotName: 'ranking' },
+                            { id: 'stats.ranks.average_rank_nh_heroic', name:'Heroic', slot: true, slotName: 'ranking' },
+                            { id: 'stats.ranks.average_rank_nh_mythic', name:'Mythic', slot: true, slotName: 'ranking' },
                         ]
                     },
                     items: {
@@ -146,9 +190,24 @@
                             { cols: 4, name: 'Item Level Information' },
                         ],
                         columns: [
-                            { id:'name', name:'Name' },
-                            { id:'class_name', name:'Class', applyClass: true, class_name: 'class_name' },
-                            { id:'specc', name:'Spec' },
+                            {
+                                id:'name', name:'Name',
+                                applyClass: true,
+                                class_name: 'bold-text'
+                            },
+                            { id:'class_name',
+                                name:'Class',
+                                applyPropClass: true,
+                                prop_class_name: 'class_name',
+                                applyClass: true,
+                                class_name: 'bold-text'
+                            },
+                            {
+                                id:'specc',
+                                name:'Spec',
+                                applyClass: true,
+                                class_name: 'bold-text'
+                            },
                             { id:'stats.artifact', name:'Artifact', slot: true, slotName: 'items', noSort: true },
                             { id:'stats.relics', name:'Relics', slot: true, slotName: 'items', noSort: true },
                             { id:'stats.items', name:'Items', slot: true, slotName: 'items', noSort: true },

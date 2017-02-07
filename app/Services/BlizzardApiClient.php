@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Promise;
 
 class BlizzardApiClient
 {
@@ -18,11 +19,22 @@ class BlizzardApiClient
         $this->client = $client;
     }
 
+    public function setClient($client) {
+        $this->client = $client;
+    }
+
     public function get($url, array $queries)
     {
         $queries['apikey'] = $this->apiKey;
 
         return $this->client->get($url, ['query' => $queries]);
+    }
+
+    public function getAsync($url, array $queries)
+    {
+        $queries['apikey'] = $this->apiKey;
+
+        return $this->client->getAsync($url, ['query' => $queries]);
     }
 
     public function getGuild($region, $server, $name)
@@ -41,5 +53,37 @@ class BlizzardApiClient
         $queries = ['fields' => 'statistics,items,achievements,talents'];
 
         return $this->get($url, $queries);
+    }
+
+    public function getCharacterAsync($region, $server, $name)
+    {
+        $fields = ['statistics','items','achievements','talents'];
+
+        $promises = $this->getCharacterPromises($region, $server, $name);
+
+        $data = [];
+
+        $results = Promise\unwrap($promises);
+        for($i = 0; $i < count($fields); $i++) {
+            $body = json_decode($results[$i]->getBody(),true);
+            $data[] = $body;
+        }
+
+        return $data;
+    }
+
+    public function getCharacterPromises($region, $server, $name)
+    {
+        $url = sprintf(self::BASE_URL, $region, 'character', $server, $name);
+
+        $fields = ['statistics','items','achievements','talents'];
+
+        $promises = [];
+        foreach ($fields as $field) {
+            $queries['fields'] = $field;
+            $promises[$field] = $this->getAsync($url, $queries);
+        }
+
+        return $promises;
     }
 }

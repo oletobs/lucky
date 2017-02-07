@@ -17,10 +17,16 @@
             <tbody>
                 <tr v-for="char in characters" :class="{ 'update-table-item-success': char.update.updated }" :key="char.id">
                     <template v-for="col in columns">
-                        <td :key="char.id+'-'+col.id" v-if="!col.slot" :class="[col.applyClass ? slugify(char[col.class_name]) : '', (col.id == sortCol) ? 'sort-active-column' : '']">
-                            {{ (col.formatNumber && getPropByString(char,col.id)) ? getPropByString(char,col.id).toLocaleString() : getPropByString(char,col.id) }}
-                        </td>
-                        <slot v-else :name="col.slotName" :item="getPropByString(char,col.id)" :key-name="char.id+'-'+col.id"></slot>
+                        <td :key="char.id+'-'+col.id"
+                            v-if="!col.slot"
+                            :class="[col.applyPropClass ? slugify(char[col.prop_class_name]) : '',
+                                    (col.id == sortCol) ? 'sort-active-column' : '',
+                                    col.applyClass ? col.class_name : '']">{{ getPropByString(char,col.id) }}</td>
+                        <slot v-else
+                              :name="col.slotName"
+                              :item="getPropByString(char,col.id)"
+                              :class-name="(col.id == sortCol) ? 'sort-active-column' : ''"
+                              :key-name="char.id+'-'+col.id"></slot>
                     </template>
 
                     <template v-if="update">

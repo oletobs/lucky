@@ -39,11 +39,11 @@ class BlizzardApiScraper
 
     public function scrape($rawData)
     {
-        $this->getBossKills($rawData);
+        $this->getBossKills($rawData['statistics']);
         $this->sumKillStats();
-        $this->getItemLevels($rawData);
-        $this->getAchievementData($rawData);
-        $this->getItems($rawData);
+        $this->getItemLevels($rawData['items']);
+        $this->getAchievementData($rawData['achievements']);
+        $this->getItems($rawData['items']);
 
         return $this->data;
     }

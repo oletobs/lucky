@@ -58,16 +58,68 @@ class WarcraftLogsApiScraper
             'average_rank_nh_mythic' => 0,
         ];
 
-        foreach ($rawData as $encounter) {
-            if(in_array($encounter['encounter'],$this->enEncounterIds)) {
-                $ratio = 0;
-                $i = 0;
-                if($encounter['difficulty'] == 5) {
-                    $ratio += ($encounter['outOf']-$encounter['rank'] / $encounter['outOf']);
-                    $i++;
+        $temp = [];
+
+        foreach ($this->data as $key => $value) {
+            $temp[$key]['ratio'] = 0;
+            $temp[$key]['count'] = 0;
+        }
+
+        foreach ($rawData as $zones) {
+            foreach ($zones as $encounter) {
+                if(in_array($encounter['encounter'],$this->enEncounterIds)) {
+                    if($encounter['difficulty'] == 3) {
+                        $temp['average_rank_en_normal']['ratio'] += (1 - ($encounter['rank'] / $encounter['outOf']));
+                        $temp['average_rank_en_normal']['count']++;
+                    } else if($encounter['difficulty'] == 4) {
+                        $temp['average_rank_en_heroic']['ratio'] += (1 - ($encounter['rank'] / $encounter['outOf']));
+                        $temp['average_rank_en_heroic']['count']++;
+                    } else if($encounter['difficulty'] == 5) {
+                        $temp['average_rank_en_mythic']['ratio'] += (1 - ($encounter['rank'] / $encounter['outOf']));
+                        $temp['average_rank_en_mythic']['count']++;
+                    }
                 }
-                $this->data['average_rank_en_mythic'] = ($ratio / $i) * 100;
+                if(in_array($encounter['encounter'],$this->tovEncounterIds)) {
+                    if($encounter['difficulty'] == 3) {
+                        $temp['average_rank_tov_normal']['ratio'] += (1 - ($encounter['rank'] / $encounter['outOf']));
+                        $temp['average_rank_tov_normal']['count']++;
+                    } else if ($encounter['difficulty'] == 4) {
+                        $temp['average_rank_tov_heroic']['ratio'] += (1 - ($encounter['rank'] / $encounter['outOf']));
+                        $temp['average_rank_tov_heroic']['count']++;
+                    } else if ($encounter['difficulty'] == 5) {
+                        $temp['average_rank_tov_mythic']['ratio'] += (1 - ($encounter['rank'] / $encounter['outOf']));
+                        $temp['average_rank_tov_mythic']['count']++;
+                    }
+                }
+                if(in_array($encounter['encounter'],$this->nhEncounterIds)) {
+                    if($encounter['difficulty'] == 3) {
+                        $temp['average_rank_nh_normal']['ratio'] += (1 - ($encounter['rank'] / $encounter['outOf']));
+                        $temp['average_rank_nh_normal']['count']++;
+                    } else if ($encounter['difficulty'] == 4) {
+                        $temp['average_rank_nh_heroic']['ratio'] += (1 - ($encounter['rank'] / $encounter['outOf']));
+                        $temp['average_rank_nh_heroic']['count']++;
+                    } else if ($encounter['difficulty'] == 5) {
+                        $temp['average_rank_nh_mythic']['ratio'] += (1 - ($encounter['rank'] / $encounter['outOf']));
+                        $temp['average_rank_nh_mythic']['count']++;
+                    }
+                }
             }
+        }
+
+        $this->data['average_rank_en_normal'] = ($temp['average_rank_en_normal']['ratio'] / (($temp['average_rank_en_normal']['count'] == 0) ? 1 : $temp['average_rank_en_normal']['count'])) * 100;
+        $this->data['average_rank_en_heroic'] = ($temp['average_rank_en_heroic']['ratio'] / (($temp['average_rank_en_heroic']['count'] == 0) ? 1 : $temp['average_rank_en_heroic']['count'])) * 100;
+        $this->data['average_rank_en_mythic'] = ($temp['average_rank_en_mythic']['ratio'] / (($temp['average_rank_en_mythic']['count'] == 0) ? 1 : $temp['average_rank_en_mythic']['count'])) * 100;
+
+        $this->data['average_rank_tov_normal'] = ($temp['average_rank_tov_normal']['ratio'] / (($temp['average_rank_tov_normal']['count'] == 0) ? 1 : $temp['average_rank_tov_normal']['count'])) * 100;
+        $this->data['average_rank_tov_heroic'] = ($temp['average_rank_tov_heroic']['ratio'] / (($temp['average_rank_tov_heroic']['count'] == 0) ? 1 : $temp['average_rank_tov_heroic']['count'])) * 100;
+        $this->data['average_rank_tov_mythic'] = ($temp['average_rank_tov_mythic']['ratio'] / (($temp['average_rank_tov_mythic']['count'] == 0) ? 1 : $temp['average_rank_tov_mythic']['count'])) * 100;
+
+        $this->data['average_rank_nh_normal'] = ($temp['average_rank_nh_normal']['ratio'] / (($temp['average_rank_nh_normal']['count'] == 0) ? 1 : $temp['average_rank_nh_normal']['count'])) * 100;
+        $this->data['average_rank_nh_heroic'] = ($temp['average_rank_nh_heroic']['ratio'] / (($temp['average_rank_nh_heroic']['count'] == 0) ? 1 : $temp['average_rank_nh_heroic']['count'])) * 100;
+        $this->data['average_rank_nh_mythic'] = ($temp['average_rank_nh_mythic']['ratio'] / (($temp['average_rank_nh_mythic']['count'] == 0) ? 1 : $temp['average_rank_nh_mythic']['count'])) * 100;
+
+        foreach ($this->data as $key => $value) {
+            $this->data[$key] = intval(round($value));
         }
     }
 }
