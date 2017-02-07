@@ -8,7 +8,7 @@
     <title>u lucky? @yield('title')</title>
     @section('stylesheets')
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
-        <link rel="stylesheet" href="{{ asset('css/app.8933ecbb88e31d0e5901.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/app.dc950e83c2b30b357fa3.css') }}">
     @show
     <script type="text/javascript" src="//wow.zamimg.com/widgets/power.js"></script>
     <script>var wowhead_tooltips = { "colorlinks": false, "iconizelinks": false, "renamelinks": false }</script>
@@ -28,7 +28,7 @@
 </div>
 
 @section('scripts')
-    <script src="{{ asset('js/app.9a3354aef13dfdcaa5b1.js') }}"></script>
+    <script src="{{ asset('js/app.5e39ce49db8b4c144834.js') }}"></script>
 @show
 
 </body>
