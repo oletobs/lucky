@@ -104,10 +104,11 @@ class BlizzardApiScraper
                             \Debugbar::stopMeasure('wowhead');
                         }
                     } else {
+
                         $this->data['items'][$key] =  [
                             'id' => $item['id'],
                             'bonus' => $item['bonusLists'],
-                            'icon' => $item['icon'],
+                            'icon' => array_key_exists('icon',$item) ? $item['icon'] : 'inv_misc_questionmark',
                             'quality' => $this->itemQuality[$item['quality']],
                             'item_level' => $item['itemLevel']
                         ];
@@ -123,9 +124,11 @@ class BlizzardApiScraper
                             $this->data['equipped_weekly_chest']++;
                         } elseif(strpos($item['context'],'challenge-mode') !== false) {
                             $this->data['equipped_dungeon_mythic_plus']++;
-                        } elseif(strpos($item['context'],'raid_normal') !== false) {
+                        } elseif(strpos($item['context'],'raid-normal') !== false) {
                             $this->data['equipped_raid_normal']++;
                         }
+
+
                     }
                 }
             }

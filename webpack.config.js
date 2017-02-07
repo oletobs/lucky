@@ -90,7 +90,7 @@ module.exports.module = {
                 },
 
                 postcss: [
-                    require('autoprefixer')
+                    require('autoprefixer'),
                 ]
             }
         },
@@ -135,7 +135,7 @@ if (Mix.cssPreprocessor) {
                     'postcss-loader',
                     'resolve-url-loader',
                     (Mix.cssPreprocessor == 'sass') ? 'sass-loader?sourceMap' : 'less-loader'
-                ]
+                ],
             })
         });
 
@@ -253,6 +253,7 @@ module.exports.plugins = (module.exports.plugins || []).concat([
         minimize: Mix.inProduction,
         options: {
             postcss: [
+                require('postcss-flexbugs-fixes'),
                 require('autoprefixer')
             ],
             context: __dirname,

@@ -6,24 +6,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="data:;base64,=">
     <title>u lucky? @yield('title')</title>
-
-    <script type="text/javascript" src="//wow.zamimg.com/widgets/power.js"></script>
-    <script>var wowhead_tooltips = { "colorlinks": false, "iconizelinks": false, "renamelinks": false }</script>
-
     @section('stylesheets')
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
-        <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/app.8933ecbb88e31d0e5901.css') }}">
     @show
-
+    <script type="text/javascript" src="//wow.zamimg.com/widgets/power.js"></script>
+    <script>var wowhead_tooltips = { "colorlinks": false, "iconizelinks": false, "renamelinks": false }</script>
 </head>
 
 
 <body>
 <div class="container-fluid">
 
-    <header>
-        <div class="logo-container"><h1 id="logo"><span>L</span>egendary<small>.rip</small></h1></div>
-    </header>
+    <div class="row justify-content-center bottom-gutter">
+        <div class="col col-auto"><h1 class="logo"><span>L</span>egendary<small class="text-muted">.rip</small></h1></div>
+    </div>
 
 
 @yield('content')
@@ -31,7 +28,7 @@
 </div>
 
 @section('scripts')
-    <script src="{{ asset('js/app.js') }}"></script>
+    <script src="{{ asset('js/app.9a3354aef13dfdcaa5b1.js') }}"></script>
 @show
 
 </body>

@@ -1,0 +1,12 @@
+@mixin make-item-color-link($color) {
+  color:  $color;
+  font-weight: bold;
+
+  :link,:visited,:hover,:active {
+    color: $color;
+  }
+}
+
+@mixin make-class-color($color) {
+  color: $color;
+}

@@ -1,0 +1,35 @@
+// Class colors
+$death-knight-red: #C41F3B;
+$demon-hunter-purple: #A330C9;
+$druid-orange: #FF7D0A;
+$hunter-green: #ABD473;
+$mage-blue: #69CCF0;
+$monk-green: #00FF96;
+$paladin-pink: #F58CBA;
+$priest-white: #FFFFFF;
+$rogue-yellow: #FFF569;
+$shaman-blue: #0070DE;
+$warlock-purple: #9482C9;
+$warrior-grey: #C79C6E;
+
+// Item quality colors
+$legendary-orange: #f49542;
+$epic-purple: #a335ee;
+$rare-blue: #0070dd;
+$artifact-color: #e5cc80;
+$uncommon-green: #1eff00;
+$heirloom-blue: #0cf;
+
+.death-knight { color: $death-knight-red }
+.demon-hunter { color: $demon-hunter-purple }
+.druid        { color: $druid-orange }
+.hunter       { color: $hunter-green }
+.mage         { color: $mage-blue }
+.monk         { color: $monk-green }
+.paladin      { color: $paladin-pink }
+.priest       { color: $priest-white }
+.rogue        { color: $rogue-yellow }
+.shaman       { color: $shaman-blue }
+.warlock      { color: $warlock-purple }
+.warrior      { color: $warrior-grey }
+

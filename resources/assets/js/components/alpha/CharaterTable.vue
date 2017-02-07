@@ -15,22 +15,12 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="char in characters" :class="{ 'update-table-item-success': char.update.updated }" :key="char.id">
-                    <template v-for="col in columns">
-                        <td :key="char.id+'-'+col.id" v-if="!col.slot" :class="[col.applyClass ? slugify(char[col.class_name]) : '', (col.id == sortCol) ? 'sort-active-column' : '']">{{ getPropByString(char,col.id) }}</td>
-                        <slot v-else :name="col.slotName" :item="getPropByString(char,col.id)" :key-name="char.id+'-'+col.id"></slot>
+                <table-item v-for="char in characters" v-on:update="updateCharacter" :update="update" :char="char" :columns="columns" :class="{ 'update-table-item-success': char.update.updated }" :key="char.id">
+                    <template slot="items" scope="props">
+                        <slot name="items"></slot>
                     </template>
-
-                    <template v-if="update">
-                        <td :key="char.id+'-'+'update'">{{ updatedAt(char) }}</td>
-                        <td :key="char.id+'-'+'update-button'">
-                            <button class="btn btn-primary btn-sm float-right" v-on:click="updateCharacter(char)" :disabled="disableUpdate(char) || char.update.updating">
-                                <i class="fa fa-refresh fa-lg" v-bind:class="{ 'fa-spin': char.update.updating }" title="Update Character"></i>
-                            </button>
-                        </td>
-                    </template>
-                </tr>
-            <tr v-if="characters.length == 0"><td :colspan="columns.length">No Characters Found.</td></tr>
+                </table-item>
+                <tr v-if="characters.length == 0"><td :colspan="columns.length">No Characters Found.</td></tr>
             </tbody>
         </table>
     </div>
@@ -39,6 +29,7 @@
 <script>
     import Guild from '../models/Guild';
     import Character from '../models/Character';
+    import TableItem from '../components/TableItem';
     import moment from 'moment-timezone';
 
     export default {
@@ -57,6 +48,8 @@
         created() {
 
         },
+
+        components: { TableItem },
 
         methods: {
             routeChanged() {
@@ -99,15 +92,6 @@
 
             updateCharacter(char) {
                 this.$emit('update', char);
-            },
-
-            updatedAt(char) {
-                if(char.updated_at) {
-                    return moment(moment.tz(char.updated_at, 'UTC')).fromNow();
-                } else {
-                    return 'Press Update!';
-                }
-
             },
 
             disableUpdate(char) {

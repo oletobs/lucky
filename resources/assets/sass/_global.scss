@@ -1,0 +1,68 @@
+// Layout
+ul.pagination {
+  margin-bottom: 8px;
+  margin-top: 0;
+}
+
+.container-fluid {
+  padding-top: 40px;
+}
+
+.form-control {
+  border: 1px solid #adadad;
+}
+
+@include media-breakpoint-up(xs) {
+  .logo {
+    font-size: 50px;
+  }
+}
+
+@include media-breakpoint-up(sm) {
+  .logo {
+    font-size: 72px;
+  }
+}
+
+.logo {
+  span {
+    color: $brand-primary;
+    font-weight: 600;
+  }
+}
+
+// Buttons
+button.nav-active-button {
+  background-color: $gray-dark;
+  border-color: darken($gray-dark, 15%);
+  color: $white;
+}
+
+// Helpers
+.left-border {
+  border-left: 1px $table-border-color solid;
+}
+
+.right-border {
+  border-right: 1px $table-border-color solid;
+}
+
+.float-right {
+  float: right;
+}
+
+.small-gutters {
+  margin-right: 0;
+  margin-left: 0;
+
+  > .col,
+  > [class*="col-"] {
+    padding-right: 1px;
+    padding-left: 1px;
+  }
+}
+
+.bottom-gutter {
+  padding-bottom: 70px;
+}
+

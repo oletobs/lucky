@@ -1,43 +1,70 @@
 <template>
-    <div v-if="!hidden">
-        <div class="character-list-input">
-            <div class="character-list-buttons">
-                <router-link tag="button" :to="{ name: 'guilds' }"><i class="fa fa-home fa-lg" aria-hidden="true"></i></router-link>
-            </div>
-            <input type="text" id="character-list-filter" placeholder="Filter character by any data" v-model="search">
-            <div class="character-list-buttons">
-                <router-link active-class="nav-active-button" tag="button" :to="{ path: 'stats' }"><i class="fa fa-list fa-lg" aria-hidden="true"> </i> Stats</router-link>
-                <router-link active-class="nav-active-button" tag="button" :to="{ path: 'items' }"><i class="fa fa-gavel fa-lg" aria-hidden="true"></i> </i> Items</router-link>
-                <router-link active-class="nav-active-button" tag="button" :to="{ path: 'rankings' }"><i class="fa fa-bar-chart fa-lg" aria-hidden="true"> </i> Rankings</router-link>
-                <button type="button" disabled="disabled">
-                    <i class="fa fa-refresh fa-lg" title="Update All Characters"> </i>
-                    Update All
-                </button>
+    <div v-if="!hidden" class="row">
+        <div class="col">
+            <div class="input-group input-group-sm">
+                <div class="input-group-btn">
+                    <router-link tag="button" class="btn btn-primary" :to="{ name: 'guilds' }"><i class="fa fa-home fa-lg" aria-hidden="true"></i></router-link>
+                </div>
+                <input type="text" id="character-list-filter" class="form-control" placeholder="Filter character by any data" v-model="search">
+                <div class="input-group-btn">
+                    <router-link active-class="nav-active-button" tag="button" class="btn btn-primary" :to="{ path: 'stats' }"><i class="fa fa-list fa-lg" aria-hidden="true"> </i> Stats</router-link>
+                </div>
+                <div class="input-group-btn">
+                    <router-link active-class="nav-active-button" tag="button" class="btn btn-primary" :to="{ path: 'items' }"><i class="fa fa-gavel fa-lg" aria-hidden="true"></i> </i> Items</router-link>
+                </div>
+                <div class="input-group-btn">
+                    <router-link active-class="nav-active-button" tag="button" class="btn btn-primary" :to="{ path: 'rankings' }"><i class="fa fa-line-chart fa-lg" aria-hidden="true"> </i> Rankings</router-link>
+                </div>
             </div>
         </div>
-        <character-table v-on:update="updateCharacter"
-                         v-on:sort="sort"
-                         :sort-col="sortCol"
-                         :sort-desc="sortDesc"
-                         :update="true" :headers="view.headers"
-                         :columns="view.columns"
-                         :characters="filteredMembers">
-            <template slot="items" scope="props">
-                <td>
-                    <a v-if="props.item" v-for="item in props.item" class="item-icon" :class="'item-quality-'+item.quality"  :href="'http://www.wowhead.com/item='+item.id+'&bonus='+item.bonus.join(':')">
-                        <img :src="'http://media.blizzard.com/wow/icons/36/'+item.icon+'.jpg'" class="img-circle" alt="item icon">
-                        <span class="item-icon-text">{{ item.item_level }}</span>
-                    </a>
-                </td>
-            </template>
-        </character-table>
+        <div class="col col-auto">
+            <pagination v-on:prev="currentPage--"
+                        v-on:next="currentPage++"
+                        v-on:go-to="currentPage = arguments[0]"
+                        :current-page="currentPage"
+                        :page-count="pageCount"
+                        :pagination-count="5">
+            </pagination>
+        </div>
+        <div class="col-12">
+            <character-table v-on:update="updateCharacter"
+                             v-on:sort="sort"
+                             :sort-col="sortCol"
+                             :sort-desc="sortDesc"
+                             :update="true" :headers="view.headers"
+                             :columns="view.columns"
+                             :characters="paginatedMembers">
+                <template slot="items" scope="props">
+                    <td>
+                        <a v-if="props.item" v-for="item in props.item" class="item-icon" target="_blank" :class="'item-quality-'+item.quality"  :href="'http://www.wowhead.com/item='+item.id+'&bonus='+item.bonus.join(':')">
+                            <img :src="'http://media.blizzard.com/wow/icons/36/'+item.icon+'.jpg'" class="rounded-circle" alt="item icon">
+                            <span class="item-icon-text">{{ item.item_level }}</span>
+                        </a>
+                    </td>
+                </template>
+            </character-table>
+
+            <div class="row justify-content-end">
+                <div class="col col-auto">
+                    <pagination v-on:prev="currentPage--"
+                                v-on:next="currentPage++"
+                                v-on:go-to="currentPage = arguments[0]"
+                                :current-page="currentPage"
+                                :page-count="pageCount"
+                                :pagination-count="5">
+                    </pagination>
+                </div>
+            </div>
+        </div>
     </div>
+
 </template>
 
 <script>
     import Guild from '../models/Guild';
     import Character from '../models/Character';
     import CharacterTable from './CharaterTable';
+    import Pagination from './Pagination';
 
     export default {
         data() {
@@ -46,8 +73,10 @@
                 view: '',
                 hidden: true,
                 search: '',
-                sortCol: 'name',
+                sortCol: '',
                 sortDesc: false,
+                paginateCount: 20,
+                currentPage: 1,
                 views: {
                     stats: {
                         headers: [
@@ -112,8 +141,8 @@
                         headers: [
                             { cols: 3, name: 'Character Information' },
                             { cols: 3, name: 'Item Information' },
-                            { cols: 4, name: 'Item Sources: Raid' },
-                            { cols: 3, name: 'Item Sources: Dungeon' },
+                            { cols: 4, name: 'Item Src: Raid' },
+                            { cols: 3, name: 'Item Src: Dungeon' },
                             { cols: 4, name: 'Item Level Information' },
                         ],
                         columns: [
@@ -130,8 +159,8 @@
                             { id:'stats.equipped_dungeon_mythic_plus', name:'M/M+' },
                             { id:'stats.equipped_weekly_chest', name:'WC' },
                             { id:'stats.equipped_dungeon_total', name:'Total' },
-                            { id:'stats.equipped_ilvl', name:'Equipped' },
-                            { id:'stats.average_ilvl', name:'Average' },
+                            { id:'stats.equipped_ilvl', name:'Eq' },
+                            { id:'stats.average_ilvl', name:'Avg' },
                             { id:'stats.equipped_average_ilvl_diff', name:'Diff' },
                             { id:'stats.artifact_ilvl', name:'Artifact' },
                         ]
@@ -141,7 +170,7 @@
         },
 
         components: {
-            CharacterTable
+            CharacterTable, Pagination
         },
 
         created () {
@@ -152,56 +181,43 @@
         },
 
         watch: {
-            '$route': 'routeChanged'
+            '$route': 'routeChanged',
+            'search': 'test'
         },
 
         computed: {
             filteredMembers() {
-                var self = this;
+                //console.clear();
+                if(this.search == '') {
+                    //console.log('no filter');
+                    return this.guild.members;
+                }
                 return this.guild.members.filter(member => {
-                    for (var key in member) {
+                    //console.log('filter');
+                    for (let key in member) {
                         if (member.hasOwnProperty(key) && typeof(member[key]) == 'string') {
-                            if(self.search.indexOf('=') == 0) {
-                                if (member[key].toLowerCase() == self.search.substring(1).toLowerCase()) {
+                            if(this.search.indexOf('=') == 0) {
+                                if (member[key].toLowerCase() == this.search.substring(1).toLowerCase()) {
                                     return true;
                                 }
                             } else {
-                                if (member[key].toLowerCase().indexOf(self.search.toLowerCase()) > -1) {
+                                if (member[key].toLowerCase().indexOf(this.search.toLowerCase()) > -1) {
                                     return true;
                                 }
                             }
                         }
                     }
-                }).sort((a, b) => {
-                    if(self.sortDesc) {
-                        let c = a;
-                        a = b;
-                        b = c;
-                    }
-                    let valueA = this.getPropByString(a,self.sortCol);
-                    let valueB = this.getPropByString(b,self.sortCol);
-                    if(valueA == undefined) {
-                        valueA = -1;
-                    }
-
-                    if(valueB == undefined) {
-                        valueB = -1;
-                    }
-
-                    if(typeof(valueA) == 'number' && typeof(valueB) == 'number') {
-                        return valueA - valueB;
-                    } else if(typeof(valueA) == 'string') {
-                        var nameA = valueA.toLowerCase();
-                        var nameB = valueB.toLowerCase();
-                        if (nameA < nameB) {
-                            return -1;
-                        }
-                        if (nameA > nameB) {
-                            return 1;
-                        }
-                        return 0;
-                    }
                 });
+            },
+
+            paginatedMembers() {
+                let begin = (this.currentPage-1) * this.paginateCount;
+                let end = Math.min(begin+this.paginateCount, this.filteredMembers.length);
+                return this.filteredMembers.slice(begin,end);
+            },
+
+            pageCount() {
+                return Math.ceil(this.filteredMembers.length / this.paginateCount);
             }
         },
 
@@ -212,6 +228,15 @@
                 }
                 if(this.views[this.$route.params.view] !== undefined) {
                     this.view = this.views[this.$route.params.view];
+                }
+            },
+
+            test() {
+                console.log('yolo');
+                if(this.currentPage > this.pageCount) {
+                    this.currentPage = this.pageCount;
+                } else if(this.currentPage < 1 && this.pageCount > 0) {
+                    this.currentPage = 1;
                 }
             },
 
@@ -271,6 +296,37 @@
                     this.sortCol = colId;
                 }
 
+                this.guild.members.sort((a, b) => {
+                    //console.log('sort');
+                    if(this.sortDesc) {
+                        let c = a;
+                        a = b;
+                        b = c;
+                    }
+                    let valueA = this.getPropByString(a,this.sortCol);
+                    let valueB = this.getPropByString(b,this.sortCol);
+                    if(valueA == undefined) {
+                        valueA = -1;
+                    }
+
+                    if(valueB == undefined) {
+                        valueB = -1;
+                    }
+
+                    if(typeof(valueA) == 'number' && typeof(valueB) == 'number') {
+                        return valueA - valueB;
+                    } else if(typeof(valueA) == 'string') {
+                        var nameA = valueA.toLowerCase();
+                        var nameB = valueB.toLowerCase();
+                        if (nameA < nameB) {
+                            return -1;
+                        }
+                        if (nameA > nameB) {
+                            return 1;
+                        }
+                        return 0;
+                    }
+                });
             },
 
             getPropByString(obj, propString) {
@@ -300,6 +356,8 @@
 
                 return obj[props[i]];
             },
+
+
         }
     }
 </script>

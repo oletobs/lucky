@@ -1,24 +1,24 @@
 <template>
-        <div class="guild-search">
-            <div class="col-xs-6">
-                <input type="text" id="guild-search-name" class="form-control" placeholder="Guild Name" v-model="guildName">
-            </div>
-            <div class="col-xs-2">
-                <select class="form-control" id="guild-search-region" v-model="regionSelected">
-                    <option v-for="region in regions" v-bind:value="region">{{ region.short }}</option>
-                </select>
-            </div>
-            <div class="col-xs-3">
-                <select class="form-control" id="guild-search-server" v-model="serverSelected">
-                    <option v-for="server in regionSelected.servers" v-bind:value="server">{{ server.name }}</option>
-                </select>
-            </div>
-            <div class="col-xs-1">
-                <button class="btn btn-default" v-on:click="findGuild">
-                    <i class="fa fa-search fa-lg" aria-hidden="true"></i>
-                </button>
-            </div>
+    <div class="row justify-content-center small-gutters bottom-gutter">
+        <div class="col-12 col-sm-5 col-md-3 col-lg-2">
+            <input type="text" id="guild-search-name" class="form-control" placeholder="Guild Name" v-model="guildName">
         </div>
+        <div class="col col-auto">
+            <select class="form-control" id="guild-search-region" v-model="regionSelected">
+                <option v-for="region in regions" v-bind:value="region">{{ region.short }}</option>
+            </select>
+        </div>
+        <div class="col col-md-auto">
+            <select class="form-control" id="guild-search-server" v-model="serverSelected">
+                <option v-for="server in regionSelected.servers" v-bind:value="server">{{ server.name }}</option>
+            </select>
+        </div>
+        <div class="col col-auto">
+            <button class="btn btn-primary" v-on:click="findGuild">
+                <i class="fa fa-search fa-lg" aria-hidden="true"></i>
+            </button>
+        </div>
+    </div>
 </template>
 
 <script>

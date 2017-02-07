@@ -1,8 +1,7 @@
 <template>
-        <table class="guild-list-table">
+        <table class="table table-sm table-responsive">
             <colgroup>
                 <col class="guild-name">
-                <col span="4" class="guild-info">
             </colgroup>
             <thead>
                 <tr>
@@ -26,7 +25,7 @@
                     <td>{{ guild.members_count }}</td>
                     <td>{{ updatedAt(guild) }}</td>
                     <td>
-                        <button class="btn btn-default btn-xs float-right" v-on:click="updateGuild(guild)">
+                        <button class="btn btn-primary btn-sm" v-on:click="updateGuild(guild)">
                             <i class="fa fa-refresh" v-bind:class="{ 'fa-spin': guild.updating }" title="Update Guild"></i> {{ guild.message }}
                         </button>
                     </td>

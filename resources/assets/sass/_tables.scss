@@ -1,0 +1,124 @@
+// Table global
+.table {
+  border: 1px solid $table-border-color;
+  margin-bottom: 8px;
+
+  thead {
+    background-color: $table-head-bg;
+
+    th {
+      white-space: nowrap;
+      border-top: 0;
+    }
+  }
+
+  td {
+    white-space: nowrap;
+  }
+}
+
+col.guild-name {
+  width: 100%;
+}
+
+// Table header
+th.sort-container {
+  cursor: pointer;
+  position: relative;
+}
+
+tr.table-overhead {
+  th {
+    text-align: center;
+  }
+}
+
+// Pagination
+.pagination {
+  .page-item-fixed {
+    width: 2rem;
+    text-align: center;
+  }
+}
+
+// Sorting icons and background colors
+i.sort-icon-asc {
+  font-size: 10px;
+  position: absolute;
+  right: 2px;
+  top: 10px;
+  color: darken($body-color, 50%);
+}
+
+i.sort-icon-desc {
+  font-size: 10px;
+  position: absolute;
+  right: 2px;
+  bottom: 11px;
+  color: darken($body-color, 50%);
+}
+
+i.sort-active {
+  color: $body-color;
+}
+
+td.sort-active-column {
+  background-color: lighten($body-bg, 5%);
+}
+
+// Update row animation
+@keyframes fadeIt {
+  100% { background-color: initial; }
+  0%   { background-color: $brand-success; }
+}
+
+tr.update-table-item-success {
+  td {
+    background-image:none !important;
+    animation: fadeIt 1.2s ease-out;
+  }
+}
+
+// Wowhead item links with item quality text coloring and icons
+a.item-icon {
+  position: relative;
+  float: left;
+
+  img {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+span.item-icon-text {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.9);
+  line-height: 1.1;
+  padding: 1px;
+  bottom: 0;
+  left: 0;
+}
+
+a.item-quality-heirloom {
+  @include make-item-color-link($heirloom-blue);
+}
+
+a.item-quality-uncommon {
+  @include make-item-color-link($uncommon-green);
+}
+
+a.item-quality-rare {
+  @include make-item-color-link($rare-blue);
+}
+
+a.item-quality-epic {
+  @include make-item-color-link($epic-purple);
+}
+
+a.item-quality-legendary {
+  @include make-item-color-link($legendary-orange);
+}
+
+a.item-quality-artifact {
+  @include make-item-color-link($artifact-color);
+}

@@ -1,0 +1,37 @@
+// Bootstrap overrides
+
+// Colors
+$body-bg: #373a3c;
+$brand-primary: #f49542;
+$body-color: #eceeef;
+$gray-dark: #292b2c;
+
+// Tables
+$table-border-color: darken($body-bg, 5%);
+$table-bg-hover: lighten($body-bg, 10%);
+$table-head-bg: darken($body-bg, 3%);
+$table-head-color: $body-color;
+
+// Buttons
+$btn-primary-color: $gray-dark;
+$btn-primary-border: darken($brand-primary, 15%);
+$btn-font-weight: bold;
+
+// Pagination
+$pagination-color: $gray-dark;
+$pagination-bg: $brand-primary;
+$pagination-border-color: $btn-primary-border;
+$pagination-hover-color: #fff;
+$pagination-hover-bg: darken($brand-primary, 15%);
+$pagination-hover-border: $btn-primary-border;
+
+$pagination-active-color: #fff;
+$pagination-active-bg: $gray-dark;
+$pagination-active-border: darken($gray-dark, 15%);
+
+$pagination-disabled-color: #fff;
+$pagination-disabled-bg: lighten($gray-dark, 15%);
+$pagination-disabled-border: darken($gray-dark, 15%);
+
+
+
