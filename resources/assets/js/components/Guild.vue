@@ -111,7 +111,7 @@
                             { id:'stats.total_mythic_raid_bosses', name:'Mythic' },
                             { id:'stats.total_raid_bosses', name:'Total' },
                             { id:'stats.total_wq', name:'Total' },
-                            { id:'stats.total_ap', name:'Total AP' },
+                            { id:'stats.total_ap', name:'Total AP', formatNumber: true },
                             { id:'stats.highest_artifact_ilvl', name:'Highest lvl' }
                         ]
                     },
